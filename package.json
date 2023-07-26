@@ -1,6 +1,6 @@
 {
   "name": "yolosns",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/cjs/index.cjs.js",
   "module": "dist/esm/index.js",
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "@dfinity/agent": "^0.15.7",
+    "@dfinity/auth-client": "^0.15.7",
     "@dfinity/candid": "^0.15.7",
     "@dfinity/ledger": "^0.0.11",
     "@dfinity/principal": "^0.15.7",
