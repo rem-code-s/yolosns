@@ -1,0 +1,24 @@
+{
+  "name": "yolosns",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/cjs/index.cjs.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "ts-declaration": "tsc --emitDeclarationOnly --outDir dist/types",
+    "build": "node esbuild.mjs && npm run ts-declaration"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dfinity/agent": "^0.15.7",
+    "@dfinity/candid": "^0.15.7",
+    "@dfinity/ledger": "^0.0.11",
+    "@dfinity/principal": "^0.15.7",
+    "@dfinity/sns": "^0.0.18",
+    "@dfinity/utils": "^0.0.18",
+    "esbuild": "^0.18.17",
+    "typescript": "^5.1.6"
+  }
+}
