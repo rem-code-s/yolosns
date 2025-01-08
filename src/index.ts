@@ -3,6 +3,7 @@ import { SnsGovernanceCanister, SnsNeuronPermissionType } from "@dfinity/sns";
 import { Principal } from "@dfinity/principal";
 import { AuthClient } from "@dfinity/auth-client";
 import { _SERVICE, idlFactory } from "./governance";
+import { IcrcLedgerCanister } from "@dfinity/ledger";
 
 export { SnsGovernanceCanister } from "@dfinity/sns";
 
@@ -88,4 +89,28 @@ export const bitfinityAddNeuron = async (canisterId: string, principal: string) 
       });
     }
   });
+};
+
+export const transferToken = async (ledgerCanisterId: string, to: string, amount: bigint) => {
+  const authClient = await createAuthClient();
+
+  const agent = new HttpAgent({
+    host: "https://icp-api.io",
+    identity: authClient.getIdentity(),
+  });
+
+  const x = IcrcLedgerCanister.create({
+    canisterId: Principal.fromText(ledgerCanisterId),
+    agent,
+  });
+
+  await x.transfer({
+    to: {
+      owner: Principal.fromText(to),
+      subaccount: [],
+    },
+    amount,
+  });
+
+  return x;
 };
