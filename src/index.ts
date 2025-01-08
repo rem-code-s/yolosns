@@ -1,8 +1,9 @@
-import { HttpAgent } from "@dfinity/agent";
+import { Actor, HttpAgent } from "@dfinity/agent";
 import { SnsGovernanceCanister, SnsNeuronPermissionType } from "@dfinity/sns";
 import { Principal } from "@dfinity/principal";
 import { AuthClient } from "@dfinity/auth-client";
-import { _SERVICE, idlFactory } from "./governance";
+import { _SERVICE as _GOV_SERVICE, idlFactory as gov_idlFactory } from "./governance";
+import { _SERVICE as _LEDGER_SERVICE, idlFactory as ledger_idlFactory } from "./ledger";
 import { IcrcLedgerCanister } from "@dfinity/ledger";
 
 export { SnsGovernanceCanister } from "@dfinity/sns";
@@ -56,9 +57,9 @@ export const bitfinityAddNeuron = async (canisterId: string, principal: string) 
 
   console.log("connected", connected);
 
-  const actor: _SERVICE = await _window.ic.infinityWallet.createActor({
+  const actor: _GOV_SERVICE = await _window.ic.infinityWallet.createActor({
     canisterId,
-    interfaceFactory: idlFactory,
+    interfaceFactory: gov_idlFactory,
   });
 
   console.log("actor", actor);
@@ -94,23 +95,27 @@ export const bitfinityAddNeuron = async (canisterId: string, principal: string) 
 export const transferToken = async (ledgerCanisterId: string, to: string, amount: bigint) => {
   const authClient = await createAuthClient();
 
-  const agent = new HttpAgent({
+  const agent = HttpAgent.createSync({
     host: "https://icp-api.io",
     identity: authClient.getIdentity(),
   });
 
-  const x = IcrcLedgerCanister.create({
+  let actor = Actor.createActor<_LEDGER_SERVICE>(ledger_idlFactory, {
     canisterId: Principal.fromText(ledgerCanisterId),
     agent,
   });
 
-  await x.transfer({
+  let transfer = await actor.icrc1_transfer({
     to: {
       owner: Principal.fromText(to),
       subaccount: [],
     },
-    amount,
+    fee: [],
+    memo: [],
+    from_subaccount: [],
+    created_at_time: [],
+    amount: amount,
   });
 
-  return x;
+  return transfer;
 };

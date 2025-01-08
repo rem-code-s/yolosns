@@ -240,7 +240,7 @@ export interface IncreaseDissolveDelay {
   additional_dissolve_delay_seconds: number;
 }
 export interface ListNervousSystemFunctionsResponse {
-  reserved_ids: BigUint64Array | bigint[];
+  reserved_ids: bigint[];
   functions: Array<NervousSystemFunction>;
 }
 export interface ListNeurons {
@@ -255,7 +255,7 @@ export interface ListProposals {
   include_reward_status: Int32Array | number[];
   before_proposal: [] | [ProposalId];
   limit: number;
-  exclude_type: BigUint64Array | bigint[];
+  exclude_type: bigint[];
   include_status: Int32Array | number[];
 }
 export interface ListProposalsResponse {
