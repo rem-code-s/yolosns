@@ -4,7 +4,7 @@ import { Principal } from "@dfinity/principal";
 import { AuthClient } from "@dfinity/auth-client";
 import { _SERVICE as _GOV_SERVICE, idlFactory as gov_idlFactory } from "./governance";
 import { _SERVICE as _LEDGER_SERVICE, idlFactory as ledger_idlFactory } from "./ledger";
-import { IcrcLedgerCanister } from "@dfinity/ledger";
+import { hexStringToUint8Array } from "@dfinity/utils";
 
 export { SnsGovernanceCanister } from "@dfinity/sns";
 
@@ -113,6 +113,41 @@ export const transferToken = async (ledgerCanisterId: string, to: string, amount
     fee: [],
     memo: [],
     from_subaccount: [],
+    created_at_time: [],
+    amount: amount,
+  });
+
+  return transfer;
+};
+
+export const transferTokenFromSubaccount = async (
+  ledgerCanisterId: string,
+  to: string,
+  amount: bigint,
+  subaccount: string
+) => {
+  const authClient = await createAuthClient();
+
+  const agent = HttpAgent.createSync({
+    host: "https://icp-api.io",
+    identity: authClient.getIdentity(),
+  });
+
+  let actor = Actor.createActor<_LEDGER_SERVICE>(ledger_idlFactory, {
+    canisterId: Principal.fromText(ledgerCanisterId),
+    agent,
+  });
+
+  const hexSubaccount = hexStringToUint8Array(subaccount);
+
+  let transfer = await actor.icrc1_transfer({
+    to: {
+      owner: Principal.fromText(to),
+      subaccount: [],
+    },
+    fee: [],
+    memo: [],
+    from_subaccount: [hexSubaccount],
     created_at_time: [],
     amount: amount,
   });
